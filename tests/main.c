@@ -1,62 +1,38 @@
 /**
  * \file main.c
- * \brief Programme principal initial du niveau 1
+ * \brief Programme principal initial du niveau 0
  * \author Mathieu Constant
  * \version 1.0
- * \date 18 mars 2021
+ * \date 18 mars 2020
  */
 
 #include "sdl2-light.h"
 #include <stdio.h>
 
 /**
- * \brief Largeur de l'écran de jeu
- */
-#define SCREEN_WIDTH 300
-
-/**
- * \brief Hauteur de l'écran de jeu
- */
-#define SCREEN_HEIGHT 480
-
-
-/**
- * \brief Taille d'un vaisseau
- */
-
-#define SHIP_SIZE 32
-
-
-/**
- * \brief Taille d'un météorite
+ * \brief Largeur de l'écran
 */
 
-#define METEORITE_SIZE 32
 
-
-/**
- * \brief Hauteur de la ligne d'arrivée
- */
-
-
-#define FINISH_LINE_HEIGHT 10
-
+#define SCREEN_WIDTH 320
 
 /**
- * \brief Pas de déplacement horizontal du vaisseau
+ * \brief Hauteur de l'écran
 */
 
-#define MOVING_STEP 10
-
+#define SCREEN_HEIGHT 240
 
 /**
-  * \brief Vitesse initiale de déplacement vertical des éléments du jeu 
+ * \brief Taille du sprite
 */
 
-#define INITIAL_SPEED 2
+#define SPRITE_SIZE 32
 
+/**
+ * \brief Pas de déplacement du sprite
+*/
 
-
+#define MOVING_STEP 5
 
 /**
  * \brief Représentation pour stocker les textures nécessaires à l'affichage graphique
@@ -64,7 +40,7 @@
 
 struct textures_s{
     SDL_Texture* background; /*!< Texture liée à l'image du fond de l'écran. */
-    SDL_Texture* sprite;
+    SDL_Texture* sprite;   
 };
 
 
@@ -74,25 +50,15 @@ struct textures_s{
 
 typedef struct textures_s textures_t;
 
-/**
-* \brief Representation du vaisseau
-*/
-
-struct sprite_s{
-	int x;
-	int y;
-	int h;
-	int w;
-};
-
-typedef struct sprite_s sprite_t;
 
 /**
  * \brief Représentation du monde du jeu
 */
 
 struct world_s{
-    sprite_t sprite;
+    int x;
+    int y;
+    
     int gameover; /*!< Champ indiquant si l'on est à la fin du jeu */
 
 };
@@ -102,6 +68,8 @@ struct world_s{
  */
 
 typedef struct world_s world_t;
+
+
 
 
 
@@ -115,8 +83,9 @@ void init_data(world_t * world){
     
     //on n'est pas à la fin du jeu
     world->gameover = 0;
-    world->sprite.y = SCREEN_HEIGHT - (1.5 * SHIP_SIZE);
-    world->sprite.x = SCREEN_WIDTH - SHIP_SIZE;
+    world->x = (SCREEN_WIDTH - SPRITE_SIZE) / 2;
+    world->y = (SCREEN_HEIGHT - SPRITE_SIZE) / 2;
+    
 }
 
 
@@ -178,6 +147,21 @@ void handle_events(SDL_Event *event,world_t *world){
              if(event->key.keysym.sym == SDLK_d){
                  printf("La touche D est appuyée\n");
               }
+              else if(event->key.keysym.sym == SDLK_RIGHT){
+                world->x += MOVING_STEP;
+              }
+               else if(event->key.keysym.sym == SDLK_LEFT){
+                world->x -= MOVING_STEP;
+              }
+               else if(event->key.keysym.sym == SDLK_UP){
+                world->y -= MOVING_STEP;
+              }
+               else if(event->key.keysym.sym == SDLK_DOWN){
+                world->y += MOVING_STEP;
+              }
+              else if(event->key.keysym.sym == SDLK_ESCAPE){
+                 printf("La touche Echape est appuyée\n");
+              }
          }
     }
 }
@@ -190,21 +174,20 @@ void handle_events(SDL_Event *event,world_t *world){
 
 void clean_textures(textures_t *textures){
     clean_texture(textures->background);
-    /* A COMPLETER */
+    clean_texture(textures->sprite);
 }
 
 
 
 /**
- * \brief La fonction initialise les textures nécessaires à l'affichage graphique du jeu
+ * \brief La fonction initialise les textures
  * \param screen la surface correspondant à l'écran de jeu
  * \param textures les textures du jeu
 */
 
 void  init_textures(SDL_Renderer *renderer, textures_t *textures){
-    textures->background = load_image( "ressources/space-background.bmp",renderer);
-    textures->sprite = load_image("ressources/spaceship.bmp", renderer);
-    /* A COMPLETER */
+    textures->background = load_image( "ressources/background.bmp",renderer);
+    textures->sprite = load_image("ressources/sprite.bmp", renderer);
 
     
 }
@@ -213,12 +196,12 @@ void  init_textures(SDL_Renderer *renderer, textures_t *textures){
 /**
  * \brief La fonction applique la texture du fond sur le renderer lié à l'écran de jeu
  * \param renderer le renderer
- * \param texture la texture liée au fond
+ * \param textures les textures du jeu
 */
 
-void apply_background(SDL_Renderer *renderer, SDL_Texture *texture){
-    if(texture != NULL){
-      apply_texture(texture, renderer, 0, 0);
+void apply_background(SDL_Renderer *renderer, textures_t *textures){
+    if(textures->background != NULL){
+      apply_texture(textures->background, renderer, 0, 0);
     }
 }
 
@@ -227,10 +210,10 @@ void apply_background(SDL_Renderer *renderer, SDL_Texture *texture){
 
 
 /**
- * \brief La fonction rafraichit l'écran en fonction de l'état des données du monde
- * \param renderer le renderer lié à l'écran de jeu
+ * \brief La fonction rafraichit l'écran en fonction de l'état des données du monde et place le personnage selon son positionnement dans world
+ * \param renderer le renderer
  * \param world les données du monde
- * \param textures les textures
+ * \param textures les textures du jeu
  */
 
 void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *textures){
@@ -239,7 +222,8 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
     clear_renderer(renderer);
     
     //application des textures dans le renderer
-    apply_background(renderer, textures->background);
+    apply_background(renderer, textures);
+    apply_texture(textures->sprite, renderer, world->x ,world->y); 
     /* A COMPLETER */
     
     // on met à jour l'écran
@@ -269,7 +253,7 @@ void clean(SDL_Window *window, SDL_Renderer * renderer, textures_t *textures, wo
  * \param window la fenêtre du jeu
  * \param renderer le renderer
  * \param textures les textures
- * \param world le monde
+ * \param wordl le monde
  */
 
 void init(SDL_Window **window, SDL_Renderer ** renderer, textures_t *textures, world_t * world){
@@ -277,20 +261,6 @@ void init(SDL_Window **window, SDL_Renderer ** renderer, textures_t *textures, w
     init_data(world);
     init_textures(*renderer,textures);
 }
-
-/**
-* \
-*/
-void init_sprite(sprite_t *sprite, int x, int y, int w, int h){
-	sprite->x = x;
-	sprite->y = y;
-	sprite->w = w;
-	sprite->h = h;
-}
-
-
-
-
 
 
 /**

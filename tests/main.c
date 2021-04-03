@@ -146,6 +146,7 @@ void handle_events(SDL_Event *event,world_t *world){
              //si la touche appuyée est 'D'
              if(event->key.keysym.sym == SDLK_d){
                  printf("La touche D est appuyée\n");
+                 world->gameover = 1;
               }
               else if(event->key.keysym.sym == SDLK_RIGHT){
                 world->x += MOVING_STEP;
@@ -161,6 +162,7 @@ void handle_events(SDL_Event *event,world_t *world){
               }
               else if(event->key.keysym.sym == SDLK_ESCAPE){
                  printf("La touche Echape est appuyée\n");
+                 world->gameover = 1;
               }
          }
     }

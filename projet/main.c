@@ -66,6 +66,7 @@ struct textures_s{
     SDL_Texture* background; /*!< Texture liée à l'image du fond de l'écran. */
     SDL_Texture* sprite;     // texture liée au vaisseu
     SDL_Texture* ligneArrive; // texture liée à la ligne d arrivée
+    SDL_Texture* meteore;
 };
 
 
@@ -97,6 +98,7 @@ struct world_s{
     int gameover; /*!< Champ indiquant si l'on est à la fin du jeu */
     sprite_t ligneArrive; // Champ concernant la ligne d'arrivée
     int vy; // vitesse verticale de la ligne d'arrivée
+    sprite_t meteore;
 };
 
 /**
@@ -151,6 +153,9 @@ void init_data(world_t * world){
     // On initialise les données de la ligne d'arrivée
     init_sprite(&(world->ligneArrive), 0, FINISH_LINE_HEIGHT, SCREEN_WIDTH, FINISH_LINE_HEIGHT);
     
+    // On initialise les données du meteorite
+    init_sprite(&(world->meteore), (SCREEN_WIDTH - METEORITE_SIZE) / 2, (SCREEN_HEIGHT - METEORITE_SIZE) / 2, 3 * METEORITE_SIZE, 7 * METEORITE_SIZE);
+
     // On affiche les données du vaisseau
     print_sprite(&(world->sprite));                   
     
@@ -189,6 +194,7 @@ int is_game_over(world_t *world){
 
 void update_data(world_t *world){
     world->ligneArrive.y += world->vy;
+    world->meteore.y += world->vy;
 }
 
 
@@ -224,6 +230,12 @@ void handle_events(SDL_Event *event,world_t *world){
               	world->sprite.x -= MOVING_STEP;
               	print_sprite(&(world->sprite));
               }
+              else if(event->key.keysym.sym == SDLK_UP){
+              	world->vy += 1;
+              }
+              else if(event->key.keysym.sym == SDLK_DOWN){
+              	world->vy -= 1;
+              }
               else if(event->key.keysym.sym == SDLK_ESCAPE){
               	printf("La touche Echape est appuyée\n");
               	world->gameover = 1;
@@ -242,6 +254,7 @@ void clean_textures(textures_t *textures){
     clean_texture(textures->background);
     clean_texture(textures->sprite);
     clean_texture(textures->ligneArrive);
+    clean_texture(textures->meteore);
 }
 
 
@@ -253,9 +266,10 @@ void clean_textures(textures_t *textures){
 */
 
 void  init_textures(SDL_Renderer *renderer, textures_t *textures){
-    textures->background = load_image( "ressources/space-background.bmp",renderer);
+    textures->background = load_image( "ressources/space-background.bmp", renderer);
     textures->sprite = load_image("ressources/spaceship.bmp", renderer);
     textures->ligneArrive = load_image("ressources/finish_line.bmp", renderer);
+    textures->meteore = load_image("ressources/meteorite.bmp", renderer);
 }
 
 
@@ -282,6 +296,17 @@ void apply_sprite(SDL_Renderer *renderer, SDL_Texture *texture, sprite_t *sprite
 	apply_texture(texture, renderer, sprite->x, sprite->y);
 }
 
+/**
+* \brief la fonction applique la texture sur le renderer dans la position donnée
+* \param renderer qui va recevoir la texture
+* \param texture la texture que l'on va appliquer
+* \param x l'abscisse où on va appliqueer la texture
+* \param y l'ordonnée où on va appliquer la texture
+*/
+
+void apply_sprite1(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y){
+	apply_texture(texture, renderer, x, y);
+}
 
 /**
  * \brief La fonction rafraichit l'écran en fonction de l'état des données du monde
@@ -299,7 +324,23 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
     apply_background(renderer, textures->background);
     apply_sprite(renderer, textures->sprite, &(world->sprite));
     apply_sprite(renderer, textures->ligneArrive, &(world->ligneArrive));
-    
+
+    // application des textures de la meteorite dans les endroits spécifiques
+    apply_sprite(renderer, textures->meteore, &(world->meteore)); // centre
+    apply_sprite1(renderer, textures->meteore, world->meteore.x + METEORITE_SIZE, world->meteore.y); // à droite du centre
+    apply_sprite1(renderer, textures->meteore, world->meteore.x - METEORITE_SIZE, world->meteore.y); // à gauche du centre
+    for (int i = 1; i <=3; i++){
+    	/* Les meteores de la ligne centrale */
+    	apply_sprite1(renderer, textures->meteore, world->meteore.x, world->meteore.y + (i * METEORITE_SIZE));
+    	apply_sprite1(renderer, textures->meteore, world->meteore.x, world->meteore.y - (i * METEORITE_SIZE));
+    	/*Les meteores à gauche de la ligne centrale */
+    	apply_sprite1(renderer, textures->meteore, world->meteore.x -  METEORITE_SIZE, world->meteore.y + (i * METEORITE_SIZE));
+    	apply_sprite1(renderer, textures->meteore, world->meteore.x - METEORITE_SIZE, world->meteore.y - (i * METEORITE_SIZE));
+    	/*Les meteores à droite de la ligne centrale */
+    	apply_sprite1(renderer, textures->meteore, world->meteore.x + METEORITE_SIZE, world->meteore.y + (i * METEORITE_SIZE));
+    	apply_sprite1(renderer, textures->meteore, world->meteore.x + METEORITE_SIZE, world->meteore.y - (i * METEORITE_SIZE));
+
+    }
     
     // on met à jour l'écran
     update_screen(renderer);

@@ -65,6 +65,7 @@
 struct textures_s{
     SDL_Texture* background; /*!< Texture liée à l'image du fond de l'écran. */
     SDL_Texture* sprite;     // texture liée au vaisseu
+    SDL_Texture* ligneArrive; // texture liée à la ligne d arrivée
 };
 
 
@@ -92,9 +93,10 @@ typedef struct sprite_s sprite_t;
 */
 
 struct world_s{
-    sprite_t sprite; // Champ pour gérer le vaisseau
+    sprite_t sprite; // Champ pour le vaisseau
     int gameover; /*!< Champ indiquant si l'on est à la fin du jeu */
-
+    sprite_t ligneArrive; // Champ concernant la ligne d'arrivée
+    int vy; // vitesse verticale de la ligne d'arrivée
 };
 
 /**
@@ -140,9 +142,15 @@ void init_data(world_t * world){
     
     //on n'est pas à la fin du jeu
     world->gameover = 0;
+
+    // On initialise la vitesse de la ligne d'arrivée
+    world->vy = INITIAL_SPEED;
     // On initialise les données du vaisseau
     init_sprite(&(world->sprite), ((SCREEN_WIDTH - SHIP_SIZE) / 2),  SCREEN_HEIGHT - (1.5 * SHIP_SIZE), SHIP_SIZE, SHIP_SIZE);
-     
+    
+    // On initialise les données de la ligne d'arrivée
+    init_sprite(&(world->ligneArrive), 0, FINISH_LINE_HEIGHT, SCREEN_WIDTH, FINISH_LINE_HEIGHT);
+    
     // On affiche les données du vaisseau
     print_sprite(&(world->sprite));                   
     
@@ -180,7 +188,7 @@ int is_game_over(world_t *world){
  */
 
 void update_data(world_t *world){
-    /* A COMPLETER */
+    world->ligneArrive.y += world->vy;
 }
 
 
@@ -233,6 +241,7 @@ void handle_events(SDL_Event *event,world_t *world){
 void clean_textures(textures_t *textures){
     clean_texture(textures->background);
     clean_texture(textures->sprite);
+    clean_texture(textures->ligneArrive);
 }
 
 
@@ -246,6 +255,7 @@ void clean_textures(textures_t *textures){
 void  init_textures(SDL_Renderer *renderer, textures_t *textures){
     textures->background = load_image( "ressources/space-background.bmp",renderer);
     textures->sprite = load_image("ressources/spaceship.bmp", renderer);
+    textures->ligneArrive = load_image("ressources/finish_line.bmp", renderer);
 }
 
 
@@ -288,6 +298,7 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
     //application des textures dans le renderer
     apply_background(renderer, textures->background);
     apply_sprite(renderer, textures->sprite, &(world->sprite));
+    apply_sprite(renderer, textures->ligneArrive, &(world->ligneArrive));
     
     
     // on met à jour l'écran
@@ -326,7 +337,6 @@ void init(SDL_Window **window, SDL_Renderer ** renderer, textures_t *textures, w
     init_data(world);
     init_textures(*renderer,textures);
 }
-
 
 
 

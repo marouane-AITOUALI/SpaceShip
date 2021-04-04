@@ -104,6 +104,31 @@ struct world_s{
 typedef struct world_s world_t;
 
 
+/*
+* \brief fonction qui affiche les informations du sprite 
+* \param sprite l element representant un vaisseau
+*/
+void print_sprite(sprite_t *sprite){
+	printf("Les coordonnées du sprite sont: (%d,%d)\n", sprite->x, sprite->y);
+	printf("La largeur du sprite: %d\n", sprite->w);
+	printf("La hauteur du sprite: %d\n", sprite->h);
+}
+
+/**
+* \brief fonction qui initialise les coordonnées du vaisseau
+* \param sprite le vaisseau
+* \param x, y, w, h coordonnées du vaisseau
+*/
+
+void init_sprite(sprite_t *sprite, int x, int y, int w, int h){
+	sprite->x = x;
+	sprite->y = y;
+	sprite->w = w;
+	sprite->h = h;
+
+}
+
+
 
 /**
  * \brief La fonction initialise les données du monde du jeu
@@ -115,8 +140,12 @@ void init_data(world_t * world){
     
     //on n'est pas à la fin du jeu
     world->gameover = 0;
-    world->sprite.y = SCREEN_HEIGHT - (1.5 * SHIP_SIZE);  /* on initialise les coordonnées du vaisseau dans le world */
-    world->sprite.x = (SCREEN_WIDTH - SHIP_SIZE) / 2 ;	                  
+    // On initialise les données du vaisseau
+    init_sprite(&(world->sprite), ((SCREEN_WIDTH - SHIP_SIZE) / 2),  SCREEN_HEIGHT - (1.5 * SHIP_SIZE), SHIP_SIZE, SHIP_SIZE);
+     
+    // On affiche les données du vaisseau
+    print_sprite(&(world->sprite));                   
+    
 }
 
 
@@ -181,9 +210,11 @@ void handle_events(SDL_Event *event,world_t *world){
               }
               else if(event->key.keysym.sym == SDLK_RIGHT){
               	world->sprite.x += MOVING_STEP;
+              	print_sprite(&(world->sprite));
               }
               else if(event->key.keysym.sym == SDLK_LEFT){
               	world->sprite.x -= MOVING_STEP;
+              	print_sprite(&(world->sprite));
               }
               else if(event->key.keysym.sym == SDLK_ESCAPE){
               	printf("La touche Echape est appuyée\n");
@@ -296,19 +327,7 @@ void init(SDL_Window **window, SDL_Renderer ** renderer, textures_t *textures, w
     init_textures(*renderer,textures);
 }
 
-/**
-* \brief fonction qui initialise les coordonnées du vaisseau
-* \param sprite le vaisseau
-* \param x, y, w, h coordonnées du vaisseau
-*/
 
-void init_sprite(sprite_t *sprite, int x, int y, int w, int h){
-	sprite->x = x;
-	sprite->y = y;
-	sprite->w = w;
-	sprite->h = h;
-
-}
 
 
 /**
@@ -328,7 +347,6 @@ int main( int argc, char* args[] )
     init(&window,&renderer,&textures,&world);
     
     while(!is_game_over(&world)){ //tant que le jeu n'est pas fini
-        
         //gestion des évènements
         handle_events(&event,&world);
         
@@ -337,7 +355,7 @@ int main( int argc, char* args[] )
         
         //rafraichissement de l'écran
         refresh_graphics(renderer,&world,&textures);
-        
+
         // pause de 10 ms pour controler la vitesse de rafraichissement
         pause(10);
     }

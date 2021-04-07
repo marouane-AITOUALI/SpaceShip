@@ -65,7 +65,7 @@
 struct textures_s{
     SDL_Texture* background; /*!< Texture liée à l'image du fond de l'écran. */
     SDL_Texture* sprite;     // texture liée au vaisseu
-    SDL_Texture* ligneArrive; // texture liée à la ligne d arrivée
+    SDL_Texture* ligneArrive; 
     SDL_Texture* meteore;
 };
 
@@ -118,6 +118,10 @@ void print_sprite(sprite_t *sprite){
 	printf("La hauteur du sprite: %d\n", sprite->h);
 }
 
+
+
+
+
 /**
 * \brief fonction qui initialise les coordonnées du vaisseau
 * \param sprite le vaisseau
@@ -148,7 +152,7 @@ void init_data(world_t * world){
     // On initialise la vitesse de la ligne d'arrivée
     world->vy = INITIAL_SPEED;
     // On initialise les données du vaisseau
-    init_sprite(&(world->sprite), ((SCREEN_WIDTH - SHIP_SIZE) / 2),  SCREEN_HEIGHT - (1.5 * SHIP_SIZE), SHIP_SIZE, SHIP_SIZE);
+    init_sprite(&(world->sprite), SCREEN_WIDTH / 2,  SCREEN_HEIGHT - (1.5 * SHIP_SIZE), SHIP_SIZE, SHIP_SIZE);
     
     // On initialise les données de la ligne d'arrivée
     init_sprite(&(world->ligneArrive), 0, FINISH_LINE_HEIGHT, SCREEN_WIDTH, FINISH_LINE_HEIGHT);
@@ -160,6 +164,7 @@ void init_data(world_t * world){
     print_sprite(&(world->sprite));                   
     
 }
+
 
 
 /**
@@ -195,6 +200,8 @@ int is_game_over(world_t *world){
 void update_data(world_t *world){
     world->ligneArrive.y += world->vy;
     world->meteore.y += world->vy;
+    depasse_gauche(&(world->sprite));
+    depasse_droite(&(world->sprite));
 }
 
 

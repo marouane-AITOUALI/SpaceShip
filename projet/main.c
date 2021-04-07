@@ -78,6 +78,8 @@ typedef struct textures_s textures_t;
 
 /**
 * \brief Representation du vaisseau
+* \param (x,y) les coordonnées
+* \param h&w : hauteur et largeur 
 */
 
 struct sprite_s{
@@ -227,20 +229,25 @@ void handle_events(SDL_Event *event,world_t *world){
                  printf("La touche D est appuyée\n");
                  world->gameover = 1;
               }
+
               else if(event->key.keysym.sym == SDLK_RIGHT){
               	world->sprite.x += MOVING_STEP;
               	print_sprite(&(world->sprite));
               }
+
               else if(event->key.keysym.sym == SDLK_LEFT){
               	world->sprite.x -= MOVING_STEP;
               	print_sprite(&(world->sprite));
               }
+
               else if(event->key.keysym.sym == SDLK_UP){
               	world->vy += 1;
               }
+
               else if(event->key.keysym.sym == SDLK_DOWN){
               	world->vy -= 1;
               }
+
               else if(event->key.keysym.sym == SDLK_ESCAPE){
               	printf("La touche Echape est appuyée\n");
               	world->gameover = 1;

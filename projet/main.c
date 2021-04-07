@@ -191,7 +191,6 @@ int is_game_over(world_t *world){
 }
 
 
-
 /**
  * \brief La fonction met à jour les données en tenant compte de la physique du monde
  * \param les données du monde
@@ -200,8 +199,7 @@ int is_game_over(world_t *world){
 void update_data(world_t *world){
     world->ligneArrive.y += world->vy;
     world->meteore.y += world->vy;
-    depasse_gauche(&(world->sprite));
-    depasse_droite(&(world->sprite));
+    
 }
 
 

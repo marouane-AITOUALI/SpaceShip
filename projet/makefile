@@ -3,9 +3,10 @@ LDFLAGS = -lm -lmingw32 -lSDL2main -lSDL2
 SDL2_INCLUDE_DIR = include
 SDL2_LIBRARIES_DIR =lib
 
-INC = sdl2-light.h
-SRC = main.c sdl2-light.c
+INC = sdl2-light.h constantes.h  enr.h monde.h textures.h
+SRC = main.c sdl2-light.c monde.c textures.c 
 OBJ = $(SRC:%.c=%.o)
+
 
 PROG = spacecorridor.exe
 
@@ -18,7 +19,14 @@ $(PROG): $(OBJ)
 doc: $(PROG)
 	doxygen $(PROG)
 
+
 .PHONY: clean
 clean:
 	del /f /q *.o *~ $(PROG)
 	rd /s /q latex html
+
+
+
+
+
+

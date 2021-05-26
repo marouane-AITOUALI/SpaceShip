@@ -8,7 +8,7 @@
 #ifndef TEXTURES_H
 #define TEXTURES_H
 
-#include "enr.h"
+#include "enregistrement.h"
 #include <SDL.h>
 
 
@@ -60,6 +60,17 @@ void  init_textures(SDL_Renderer *renderer, textures_t *textures);
 */
 
 void apply_sprite1(SDL_Renderer *renderer, SDL_Texture *texture, int x, int y);
+
+
+/**
+* \brief la fonction applique chaque mur à sa position dans le renderer
+* \param renderer le renderer
+* \param world les données du monde
+* \param textures la texture liée au mur
+*/
+
+void apply_walls(SDL_Renderer *renderer, world_t *world,textures_t *textures);
+
 
 /**
  * \brief La fonction rafraichit l'écran en fonction de l'état des données du monde

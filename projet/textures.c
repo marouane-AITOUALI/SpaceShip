@@ -6,7 +6,7 @@
 */
 
 #include "textures.h"
-#include "enr.h"
+#include "enregistrement.h"
 #include "constantes.h"
 #include "sdl2-light.h"
 
@@ -43,6 +43,12 @@ void clean_textures(textures_t *textures){
     clean_texture(textures->meteore);
 }
 
+void apply_walls(SDL_Renderer *renderer, world_t *world,textures_t *textures){
+  for (int i = 0; i < 58; ++i){
+    apply_sprite(renderer, textures->meteore, &(world->murs[i]));
+  }
+}
+
 void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *textures){
     
     //on vide le renderer
@@ -54,22 +60,29 @@ void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *texture
     apply_sprite(renderer, textures->ligneArrive, &(world->ligneArrive));
 
     // application des textures de la meteorite dans les endroits spécifiques
+    /*
     apply_sprite(renderer, textures->meteore, &(world->meteore)); // centre
     apply_sprite1(renderer, textures->meteore, world->meteore.x + METEORITE_SIZE, world->meteore.y); // à droite du centre
     apply_sprite1(renderer, textures->meteore, world->meteore.x - METEORITE_SIZE, world->meteore.y); // à gauche du centre
-    for (int i = 1; i <=3; i++){
+    */
+    //for (int i = 1; i <=3; i++){
       /* Les meteores de la ligne centrale */
+      /*
       apply_sprite1(renderer, textures->meteore, world->meteore.x, world->meteore.y + (i * METEORITE_SIZE));
-      apply_sprite1(renderer, textures->meteore, world->meteore.x, world->meteore.y - (i * METEORITE_SIZE));
+      apply_sprite1(renderer, textures->meteore, world->meteore.x, world->meteore.y - (i * METEORITE_SIZE));*/
       /*Les meteores à gauche de la ligne centrale */
+      /*
       apply_sprite1(renderer, textures->meteore, world->meteore.x -  METEORITE_SIZE, world->meteore.y + (i * METEORITE_SIZE));
-      apply_sprite1(renderer, textures->meteore, world->meteore.x - METEORITE_SIZE, world->meteore.y - (i * METEORITE_SIZE));
+      apply_sprite1(renderer, textures->meteore, world->meteore.x - METEORITE_SIZE, world->meteore.y - (i * METEORITE_SIZE));*/
       /*Les meteores à droite de la ligne centrale */
+      /*
       apply_sprite1(renderer, textures->meteore, world->meteore.x + METEORITE_SIZE, world->meteore.y + (i * METEORITE_SIZE));
-      apply_sprite1(renderer, textures->meteore, world->meteore.x + METEORITE_SIZE, world->meteore.y - (i * METEORITE_SIZE));
+      apply_sprite1(renderer, textures->meteore, world->meteore.x + METEORITE_SIZE, world->meteore.y - (i * METEORITE_SIZE));*/
 
-    }
+   // }
     
+    apply_walls(renderer, world, textures);
+
     // on met à jour l'écran
     update_screen(renderer);
 }

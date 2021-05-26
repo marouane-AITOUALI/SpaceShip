@@ -5,8 +5,8 @@
 * \date 13 avril 2021
 */
 
-#ifndef ENRE_H
-#define ENRE_H
+#ifndef ENR_H
+#define ENR_H
 
 #include <SDL.h>
 
@@ -52,7 +52,9 @@ struct world_s{
     int gameover; /*!< Champ indiquant si l'on est à la fin du jeu */
     sprite_t ligneArrive; // Champ concernant la ligne d'arrivée
     int vy; // vitesse verticale de la ligne d'arrivée
-    sprite_t meteore;
+    //sprite_t meteore;
+    sprite_t murs[58];
+
 };
 
 /**

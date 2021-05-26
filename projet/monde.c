@@ -6,7 +6,7 @@
 */
 
 #include "monde.h"
-#include "enr.h"
+#include "enregistrement.h"
 #include "constantes.h"
 #include "sdl2-light.h"
 #include <stdio.h>
@@ -27,7 +27,75 @@ void init_sprite(sprite_t *sprite, int x, int y, int w, int h){
   sprite->h = h;
 }
 
+void init_walls(world_t *world){
+  // premier couloir
+  int a = 0;
+  for (int i = 0; i < 3; i++){
+    
+    init_sprite(&(world->murs[a]), 48, 30 * i, 0, 0);
+    a += 1;
+    init_sprite(&(world->murs[a]), 108, 30 * i, 0, 0);
+    a += 1;
+    init_sprite(&(world->murs[a]), 78, 30 * i, 0, 0);
+    a += 1;
+  }
+ 
 
+
+  //deuxieme couloir
+  int b = 9;
+  for (int j = 0; j < 3; j++){
+    init_sprite(&(world->murs[b]), 252, 30 * j, 0, 0);
+    b += 1;
+    init_sprite(&(world->murs[b]), 222, 30 * j, 0, 0);
+    b += 1;
+    init_sprite(&(world->murs[b]), 192, 30 * j, 6, 0);
+    b += 1;
+}
+  
+  // couloir ''
+  int c = 18;
+  for(int k = 0; k < 3; k++){
+    init_sprite(&(world->murs[c]), 188, -352 + (30 * k), 10, 10);
+    c += 1;
+    init_sprite(&(world->murs[c]), 218, -352 + (30 * k), 10, 10);
+    c += 1;
+    init_sprite(&(world->murs[c]), 248, -352 + (30 * k), 10, 10);
+    c += 1;
+  }
+  
+
+  
+  // couloir ""
+  int d = 27;
+  for (int cpt = 0; cpt < 3; cpt ++){
+    init_sprite(&(world->murs[d]), 252, -672 + (30 * cpt), 0, 10);
+    d += 1;
+    init_sprite(&(world->murs[d]), 222, -672 + (30 * cpt), 0, 10);
+    d += 1;
+    init_sprite(&(world->murs[d]), 192, -672 + (30 * cpt), 0, 10);
+    d += 1;    
+  }
+
+  int f = 48;
+  for (int t = 0; t < 5; t++){
+    init_sprite(&(world->murs[f]), 40, -750 + (30 * t), 0, 10);
+    f += 1;
+    init_sprite(&(world->murs[f]), 70, -750 + (30 * t), 0, 10);
+    f += 1;
+  }
+
+  int e = 36;
+  for(int l = 0; l < 4; l++){
+    init_sprite(&(world->murs[e]), 90, -250 + (30 * l), 0, 10);
+    e += 1;
+    init_sprite(&(world->murs[e]), 120, -250 + (30 * l), 0, 10);
+    e += 1;
+    init_sprite(&(world->murs[e]), 150, -250 + (30 * l), 0, 10);
+    e += 1;
+  }
+  
+}
 
 void init_data(world_t * world){
     
@@ -40,15 +108,19 @@ void init_data(world_t * world){
     init_sprite(&(world->sprite), SCREEN_WIDTH / 2,  SCREEN_HEIGHT - (1.5 * SHIP_SIZE), SHIP_SIZE, SHIP_SIZE);
     
     // On initialise les données de la ligne d'arrivée
-    init_sprite(&(world->ligneArrive), 0, FINISH_LINE_HEIGHT + (FINISH_LINE_HEIGHT / 2), SCREEN_WIDTH, FINISH_LINE_HEIGHT);
+   	init_sprite(&(world->ligneArrive), SCREEN_WIDTH / 2, -960, SCREEN_WIDTH,FINISH_LINE_HEIGHT);
     
     // On initialise les données du meteorite 
-    init_sprite(&(world->meteore), (SCREEN_WIDTH - METEORITE_SIZE) / 2, (SCREEN_HEIGHT - METEORITE_SIZE) / 2, 3 * METEORITE_SIZE, 7 * METEORITE_SIZE);
+    //init_sprite(&(world->meteore), (SCREEN_WIDTH - METEORITE_SIZE) / 2, (SCREEN_HEIGHT - METEORITE_SIZE) / 2, 3 * METEORITE_SIZE, 7 * METEORITE_SIZE);
 
     // On affiche les données du vaisseau
-    print_sprite(&(world->sprite));                   
+    print_sprite(&(world->sprite));   
+
+
+    init_walls(world);        
     
 }
+
 
 
 void handle_events(SDL_Event *event,world_t *world){
@@ -124,14 +196,24 @@ void handle_sprites_collision(sprite_t *sp1, sprite_t *sp2, world_t *world, int 
   }
 }
 
+void update_walls(world_t *world){
+  for(int i =0; i < 58; i++){
+    world->murs[i].y += world->vy;
+  }
+}
+
 void update_data(world_t *world){
     world->ligneArrive.y += world->vy;
-    world->meteore.y += world->vy;
+    //world->meteore.y += world->vy;
     depasse_gauche(&(world->sprite));
     depasse_droite(&(world->sprite));
-    handle_sprites_collision(&(world->sprite), &(world->meteore), world, 1); /* Changer le 1 par 0
-    pour que le vaisseau ne devient plus invisible en cas de collision */
+    for (int i = 0; i < 58; i++){
+      handle_sprites_collision(&(world->sprite), &(world->murs[i]), world, 1); 
+    }
+    /* Changer le 1 par 0 pour que le vaisseau ne devient plus invisible en cas de collision */
+    
     handle_sprites_collision(&(world->sprite), &(world->ligneArrive), world, 0);
+    update_walls(world);
 }
 
 

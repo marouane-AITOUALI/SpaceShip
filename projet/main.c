@@ -8,7 +8,7 @@
 
 #include "sdl2-light.h"
 #include "constantes.h"
-#include "enr.h"
+#include "enregistrement.h"
 #include "textures.h"
 #include "monde.h"
 

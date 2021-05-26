@@ -8,7 +8,7 @@
 #ifndef MONDE_H
 #define MONDE_H
 
-#include "enr.h"
+#include "enregistrement.h"
 
 
 
@@ -31,6 +31,22 @@ void init_sprite(sprite_t *sprite, int x, int y, int w, int h);
 
 
 /**
+* \brief fonction qui donne les positions aux murs pour former des couloirs
+* \param world les données du monde
+*/
+
+void init_walls(world_t *world);
+
+
+/**
+* \brief fonction qui met à jour la position des murs
+* \param world les données du monde
+*/
+
+void update_walls(world_t *world);
+
+
+/**
  * \brief La fonction initialise les données du monde du jeu
  * \param world les données du monde
  */
@@ -40,7 +56,7 @@ void init_data(world_t * world);
 
 /**
  * \brief La fonction met à jour les données en tenant compte de la physique du monde
- * \param les données du monde
+ * \param world les données du monde
  */
 
 void update_data(world_t *world);

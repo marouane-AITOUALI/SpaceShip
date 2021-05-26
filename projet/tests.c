@@ -1,6 +1,6 @@
 /**
 * \file tests.c
-* \brief Tests des fonctions qui traitent les donnees du monde
+* \brief Tests des fonctions qui traitent les données du monde
 * \author AIT OUALI Marouane
 * \date 16 avril 2021
 */

@@ -53,7 +53,7 @@ void init_walls(world_t *world){
     b += 1;
 }
   
-  // couloir ''
+  // couloir 3
   int c = 18;
   for(int k = 0; k < 3; k++){
     init_sprite(&(world->murs[c]), 188, -352 + (30 * k), 10, 10);
@@ -66,7 +66,7 @@ void init_walls(world_t *world){
   
 
   
-  // couloir ""
+  // couloir 4
   int d = 27;
   for (int cpt = 0; cpt < 3; cpt ++){
     init_sprite(&(world->murs[d]), 252, -672 + (30 * cpt), 0, 10);
@@ -77,6 +77,7 @@ void init_walls(world_t *world){
     d += 1;    
   }
 
+  // couloir 5
   int f = 48;
   for (int t = 0; t < 5; t++){
     init_sprite(&(world->murs[f]), 40, -750 + (30 * t), 0, 10);
@@ -85,6 +86,7 @@ void init_walls(world_t *world){
     f += 1;
   }
 
+  // couloir 6
   int e = 36;
   for(int l = 0; l < 4; l++){
     init_sprite(&(world->murs[e]), 90, -250 + (30 * l), 0, 10);

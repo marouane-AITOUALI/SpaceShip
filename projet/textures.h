@@ -16,8 +16,8 @@
 
 
 /**
- * \brief La fonction nettoie les textures
- * \param textures les textures
+* \brief La fonction nettoie les textures
+* \param textures les textures
 */
 
 void clean_textures(textures_t *textures);
@@ -73,11 +73,11 @@ void apply_walls(SDL_Renderer *renderer, world_t *world,textures_t *textures);
 
 
 /**
- * \brief La fonction rafraichit l'écran en fonction de l'état des données du monde
- * \param renderer le renderer lié à l'écran de jeu
- * \param world les données du monde
- * \param textures les textures
- */
+* \brief La fonction rafraichit l'écran en fonction de l'état des données du monde
+* \param renderer le renderer lié à l'écran de jeu
+* \param world les données du monde
+* \param textures les textures
+*/
 
 void refresh_graphics(SDL_Renderer *renderer, world_t *world,textures_t *textures);
 

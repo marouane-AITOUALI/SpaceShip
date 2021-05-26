@@ -44,7 +44,7 @@ void clean_textures(textures_t *textures){
 }
 
 void apply_walls(SDL_Renderer *renderer, world_t *world,textures_t *textures){
-  for (int i = 0; i < 58; ++i){
+  for (int i = 0; i < 58; i++){
     apply_sprite(renderer, textures->meteore, &(world->murs[i]));
   }
 }
